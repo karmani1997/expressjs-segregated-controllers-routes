@@ -1,9 +1,18 @@
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
+const {requestLoggingMiddleware, responseLoggingMiddleware, errorHandler} = require('./middlewares/middleware');
 
-// Require the routes file and pass the app instance
-const routes = require('./routes')(app);
+app.use(express.json());
+app.use(requestLoggingMiddleware);
+app.use(responseLoggingMiddleware);
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+const {userRouter, studentRouter} = require('./routes');
+
+app.use('/users',userRouter);
+app.use('/students',studentRouter);
+
+app.use(errorHandler);
+
+module.exports = {
+    app
+}
