@@ -8,32 +8,39 @@ let users = [
     { id: 4, name: 'Hanan' }
   ];
   
-  helloWorld = (req, res) => {
-    res.send('Hello World User!')
+ const helloWorld = async(req, res) => {
+    res.send('Hello World!')
 };
 
 
-  getUsers = (req, res) => {
+ const getUsers = async(req, res) => {
+
     res.send(users);
   };
 
-  getUserById = (req, res) => {
+  const getUserById = async(req, res) => {
+    console.log("I am in the getUserById Function")
     const id = req.params.id;
-    console.log("In the getUserById Function ",id)
+
     const user = users.find((user) => user.id == id);
     res.send(user);
   };
 
-  createUser = (req, res) => {
+const createUser = async(req, res) => {
     const user = req.body;
     users.push(user);
     res.send(users);
   };
 
-  deleteUser = (req, res) => {
+const deleteUser = async(req, res) => {
     const id = req.params.id;
     users = users.filter(user => user.id != id);
     res.send(users);
   };
 
- module.exports = {helloWorld, getUsers, getUserById, createUser, deleteUser}
+ const errorHandler =  async(error, req, res) => {
+    //res.send("Error in backend")
+    throw new Error('An internal error occured')
+};
+
+ module.exports = {helloWorld, getUsers, getUserById, createUser, deleteUser, errorHandler};
