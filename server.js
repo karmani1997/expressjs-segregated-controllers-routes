@@ -1,8 +1,17 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
 const {app} = require('./app')
-const port = 3000
-process.env.NODE_ENV='production'
 
+const MONGO_URL = process.env.MONGO_URL
+const PORT = process.env.PORT
 
-app.listen(port, () => {
-    console.log(`app is listening on port ${port}`)
+mongoose.connect(MONGO_URL)
+.then(() => {
+    app.listen(PORT, () => {
+        console.log(`app is listening on port ${PORT}`)
+    });
+    
+})
+.catch((error) => {
+    console.log(error)
 });

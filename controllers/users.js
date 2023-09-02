@@ -1,46 +1,86 @@
 // usersController.js
+const {User} = require('../models')
 
-
-let users = [
-    { id: 1, name: 'Mehtab' },
-    { id: 2, name: 'Maqi' },
-    { id: 3, name: 'Hamza' },
-    { id: 4, name: 'Hanan' }
-  ];
-  
- const helloWorld = async(req, res) => {
-    res.send('Hello World!')
-};
-
-
+//get users
  const getUsers = async(req, res) => {
+    try{
+      const users = await User.find({});
+      res.status(200).json(users);
+    }catch(error){
+      res.status(500);
+      throw new Error(error.message);
+    }
 
-    res.send(users);
   };
 
+//get user by id
   const getUserById = async(req, res) => {
-    console.log("I am in the getUserById Function")
-    const id = req.params.id;
+    try{
+      const{id} = req.params;
+      const user = await User.findById(id);
+      res.status(200).json(user)
 
-    const user = users.find((user) => user.id == id);
-    res.send(user);
+    }catch(error){
+
+    }
+  
   };
+
+
+//create user
 
 const createUser = async(req, res) => {
-    const user = req.body;
-    users.push(user);
-    res.send(users);
+    try{
+
+      const user = await User.create(req.body)
+      res.status(200).json(user)
+    }catch(error){
+      res.status(500);
+      throw new Error(error.message);
+    }
+
   };
 
+//delete user
 const deleteUser = async(req, res) => {
-    const id = req.params.id;
-    users = users.filter(user => user.id != id);
-    res.send(users);
+  try{
+    const {id} = req.params;
+    const user = await User.findByIdAndDelete(id)
+    if (!user){
+      res.status(404);
+      throw new Error(`can not find any user with id ${id}`);
+    }
+    res.status(200).json(user);
+  }catch(error){
+    res.status(500);
+    throw new Error(error.message)
+  }
   };
+
+//update user
+
+const updateUser = async(req, res) => {
+  try{
+    const {id} = req.params;
+    const user = await User.findByIdAndUpdate(id,req.body);
+    if (!user){
+      res.status(404);
+      throw new Error(`can not find any user with id ${id}`);
+    }
+    const updatedUser = await User.findById(id);
+    res.status(200).json(updatedUser);
+  }catch(error){
+      res.status(500);
+      throw new Error(error.message);
+  }
+}
+
+
+
 
  const errorHandler =  async(error, req, res) => {
     //res.send("Error in backend")
     throw new Error('An internal error occured')
 };
 
- module.exports = {helloWorld, getUsers, getUserById, createUser, deleteUser, errorHandler};
+ module.exports = {updateUser, getUsers, getUserById, createUser, deleteUser, errorHandler};
